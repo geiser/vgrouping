@@ -20,7 +20,7 @@ $string['no_roles']                     = 'Sem papéis';
 $string['show_roles']                   = 'Mostrar papéis';
 $string['new_grouping_label']           = 'Novo agrupamento';
 
-$string['show_groups']                  = 'Mostrar grupos';
+$string['show_groups']                  = 'Mostrar membros do';
 $string['no_groups']                    = 'Sem grupos';
 $string['all_groups']                   = 'Todos os grupos';
 

@@ -15,15 +15,14 @@ class block_vgroupings extends block_list {
 
         // get context
         if (!empty($this->instance->pageid)) {
-            $context = get_context_instance(CONTEXT_COURSE,
-                                            $this->instance->pageid);
+            $context = context_course::instance($COURSE->id);
             if ($COURSE->id == $this->instance->pageid) {
                 $course = $COURSE;
             } else {
                 $course = get_record('course', 'id', $this->instance->pageid);
             }
         } else {
-            $context = get_context_instance(CONTEXT_SYSTEM);
+            $context = context_system::instance();
             $course = $SITE;
         }
 

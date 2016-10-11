@@ -21,7 +21,7 @@ foreach ($url_params as $var => $val) {
 
 // require login and set context
 require_login($courseid, false);
-$context = get_context_instance(CONTEXT_COURSE, $courseid);
+$context = context_course::instance($courseid);
 require_capability('block/vgroupings:view', $context);
 
 // build the head part of page

@@ -20,7 +20,7 @@ $string['no_roles']                     = 'Without roles';
 $string['show_roles']                   = 'Show roles';
 $string['new_grouping_label']           = 'New grouping';
 
-$string['show_groups']                  = 'Show groups';
+$string['show_groups']                  = 'Show members of';
 $string['no_groups']                    = 'Without groups';
 $string['all_groups']                   = 'All';
 

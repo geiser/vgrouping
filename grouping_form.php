@@ -114,8 +114,10 @@ class grouping_form {
    
     private function get_roleids($userid) {
         global $DB;
-        $listofcontexts = get_related_contexts_string($this->context);
-        $user_roleids = $DB->get_fieldset_select('role_assignments', 'roleid', 'userid='.$userid.' AND contextid '.$listofcontexts);
+        $listofcontexts = $this->context->get_parent_context_ids(true);
+        $user_roleids = $DB->get_fieldset_select('role_assignments', 'roleid',
+            'userid = :userid AND contextid IN ('.implode(',', $listofcontexts).')',
+            array('userid'=>$userid));
         $result = 'no_roles';
         if (!empty($user_roleids)) { $result = implode(',', $user_roleids); }
         return $result;
