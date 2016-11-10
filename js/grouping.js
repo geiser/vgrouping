@@ -306,6 +306,59 @@ function resetGroupMembers() {
     synchroniseModelToView();
 }
 
+function assignBasedOnQPJ() {
+    synchroniseViewToModel();
+    var unassigneds = new Array();
+    $("#participants .user:visible").each(function() {
+        rslt = /user-(\d+)/.exec(this.id);
+        var existInAssign = false;
+        var userId = parseInt(rslt[1]);
+        for (var i in circles) {
+            for (var j in circles[i].members) {
+                if (userId == circles[i].members[j]) {
+                    existInAssign = true;
+                }
+                if (existInAssign) { break; }
+            }
+            if (existInAssign) { break; }
+        }
+        if (!existInAssign) { unassigneds.push(userId); }
+    });
+
+    $.ajax({
+        url: '',
+        data: {
+            userids: unassigneds
+        }, method: "POST"
+    }).done(function(resp) {
+        alert(resp);
+    });
+
+    unassigneds = randomiseArray(unassigneds);
+    while (unassigneds.length > 0) {
+        //get the circle(s) with the lowest numbers
+        var lowestCircle = 0;
+        var lowestCircles = new Array();
+        for (var i in circles) {
+            c = circles[i].members;
+            lc = circles[lowestCircle].members;
+            if (c.length < lc.length) {
+                lowestCircle = i;
+                lowestCircles = new Array();
+            } else if (c.length == lc.length) {
+                lowestCircles.push(i);
+            }
+        }
+        lowestCircles.push(lowestCircle);
+        //pick a random circle from the list of lowest circles
+        do {
+            var randomCircle = Math.floor(Math.random() * lowestCircles.length);
+        } while (randomCircle >= lowestCircles.length); //on the OFF CHANCE that Math.random() produces 1
+        circles[lowestCircles[randomCircle]].members.push(unassigneds.pop());
+    }
+    synchroniseModelToView();
+}
+
 function assignRandomly() {
     synchroniseViewToModel();
     var unassigneds = new Array();
@@ -348,6 +401,8 @@ function assignRandomly() {
     }
     synchroniseModelToView();
 }
+
+
 
 function update_participant_views() {
     var selector = "";

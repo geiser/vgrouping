@@ -229,6 +229,7 @@ class grouping_form {
         // get all label messages
         $number_groups_label = get_string('number_groups', 'block_vgroupings');
         $reset_groups_label = get_string('reset_group_members', 'block_vgroupings');
+        $assign_based_on_qpj_label = get_string('assign_based_on_qpj_label', 'block_vgroupings');
         $participant_label = get_string('participants', 'block_vgroupings');
         $randomly_label = get_string('randomly_select_members', 'block_vgroupings');
         $show_roles_label = get_string('show_roles', 'block_vgroupings');
@@ -272,6 +273,7 @@ class grouping_form {
                 <h2>$participant_label</h2>
                 <button type="button" onclick="assignRandomly();">$randomly_label</button>
                 <button type="button" onclick="resetGroupMembers();">$reset_groups_label</button>
+                <button type="button" onclick="assignBasedOnQPJ();">$assign_based_on_qpj_label</button>
                 <div class="userList"><ul style="top: 0px;">$userdivs</ul></div>
             </div>
             <div id="circles" style="min-height: 200px; width: 100%; display: table; margin-bottom: 25px;">

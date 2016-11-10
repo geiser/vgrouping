@@ -119,7 +119,8 @@ $tabs = array();
 if (!empty($groupings)) {
     foreach ($groupings as $grouping) {
         $tabs[0][] = new tabobject('grouping'.$grouping->id,
-            new moodle_url('/blocks/vgroupings/grouping.php', array('course'=>$courseid, 'grouping'=>$grouping->id)),
+            new moodle_url('/blocks/vgroupings/grouping.php',
+                array('course'=>$courseid, 'grouping'=>$grouping->id)),
             $grouping->name);
     }
 }
