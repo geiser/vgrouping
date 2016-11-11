@@ -337,9 +337,11 @@ function assignBasedOnQPJ() {
         success: function(resp) {
             var keys = Object.keys(resp); 
             for (var k = 0; k < keys.length; k++) {
+                var pname = prompt("Please enter the groups' name for the "+
+                    "members of "+keys[k], keys[k]);
                 var members = resp[keys[k]];
                 for (var j = 0; j < circles.length ; j++) {
-                    if (circles[j].name != keys[k]) continue;
+                    if (circles[j].name != pname) continue;
                     circles[j].members = members;
                 }
             }

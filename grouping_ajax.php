@@ -19,7 +19,7 @@
  *
  * @copyright Geiser Chalco
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
- * @package mod_vpl
+ * @package block_vgrouping
  */
 if (!defined('AJAX_SCRIPT')) {
     define('AJAX_SCRIPT', true);
