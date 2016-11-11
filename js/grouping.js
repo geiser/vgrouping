@@ -324,39 +324,28 @@ function assignBasedOnQPJ() {
         }
         if (!existInAssign) { unassigneds.push(userId); }
     });
-
+    var limit = prompt('Please enter the value between [-2,2] that must '+
+            'be surpassed in mean to assign in a group:');
     $.ajax({
-        url: '',
+        global: false,
+        url: 'grouping_ajax.php',
         data: {
+            limit: limit,
             userids: unassigneds
-        }, method: "POST"
-    }).done(function(resp) {
-        alert(resp);
-    });
-
-    unassigneds = randomiseArray(unassigneds);
-    while (unassigneds.length > 0) {
-        //get the circle(s) with the lowest numbers
-        var lowestCircle = 0;
-        var lowestCircles = new Array();
-        for (var i in circles) {
-            c = circles[i].members;
-            lc = circles[lowestCircle].members;
-            if (c.length < lc.length) {
-                lowestCircle = i;
-                lowestCircles = new Array();
-            } else if (c.length == lc.length) {
-                lowestCircles.push(i);
+        },
+        type: 'POST',
+        success: function(resp) {
+            var keys = Object.keys(resp); 
+            for (var k = 0; k < keys.length; k++) {
+                var members = resp[keys[k]];
+                for (var j = 0; j < circles.length ; j++) {
+                    if (circles[j].name != keys[k]) continue;
+                    circles[j].members = members;
+                }
             }
+            synchroniseModelToView();
         }
-        lowestCircles.push(lowestCircle);
-        //pick a random circle from the list of lowest circles
-        do {
-            var randomCircle = Math.floor(Math.random() * lowestCircles.length);
-        } while (randomCircle >= lowestCircles.length); //on the OFF CHANCE that Math.random() produces 1
-        circles[lowestCircles[randomCircle]].members.push(unassigneds.pop());
-    }
-    synchroniseModelToView();
+    });
 }
 
 function assignRandomly() {
