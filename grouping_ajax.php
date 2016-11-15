@@ -83,12 +83,18 @@ if ($action == 'groupingbyqpj') {
             }
 
             if (empty($return[$group])) $return[$group] = array();
-            if (($accum >= $limit)  && !in_array($userid, $return[$group])) {
+            if (($accum > $limit)  && !in_array($userid, $return[$group])) {
                 $return[$group][] = $userid;
             }
         }
     }
-} else if ($action == 'groupingbygrade') {
+
+//    print_r($return);
+//    die;
+
+} 
+/*
+else if ($action == 'groupingbygrade') {
 
 
 
@@ -115,7 +121,6 @@ if ($action == 'groupingbyqpj') {
                 eval('$is_potential_users = ('.$sum/count($grades).$right_part_exp.');');
             } else if ($rule->operation == 'or') {
                 // potential users are who satisfy one expression
-                $iditems
                 foreach ($rule->expressions as $right_exp) {
                     if (!is_right_part_valid_exp($right_part_exp)) {
                         throw new Exception('Invalid expression! value '.$right_part_exp.' is invalid.');
@@ -137,7 +142,6 @@ if ($action == 'groupingbyqpj') {
         $return[$rule->groupname] = $potential_users;
     }
 
-    /*
     $rules = required_param('rules', PARAM_RAW);
     foreach ($rules as $rule) {
         $groupname = $rule->groupname;
@@ -147,13 +151,13 @@ if ($action == 'groupingbyqpj') {
         } 
         eval( );
     }
-     */
 }
 
 function get_cond_expression($left_part, $right_part, $format = 'php') {
     $result = '';
     return $result;
 }
+*/
 
 echo json_encode($return);
 die;

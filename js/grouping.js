@@ -337,9 +337,9 @@ function assignBasedOnGrade() {
             expressions.push(prompt('Input the condition expression to evaluate the average value. '+
                         'To define this expresion, use the format: [itemid] [condition] [number]. For example, <=34'));
         } else {
-            var exp_str = prompt('Input the list of conditions expression to evaluate each game-items. '+
-                        'To define each expresion, use the format: [itemid] [condition] [numer]. For example, <= 34'));
-            expressions = exp_str.split(",");
+            //var exp_str = prompt('Input the list of conditions expression to evaluate each game-items. '+
+            //            'To define each expresion, use the format: [itemid] [condition] [numer]. For example, <= 34'));
+            //expressions = exp_str.split(",");
         } 
 
         rules.push({
