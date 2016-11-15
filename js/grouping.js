@@ -306,6 +306,68 @@ function resetGroupMembers() {
     synchroniseModelToView();
 }
 
+function assignBasedOnGrade() {
+    synchroniseViewToModel();
+    var unassigneds = new Array();
+    $("#participants .user:visible").each(function() {
+        rslt = /user-(\d+)/.exec(this.id);
+        var existInAssign = false;
+        var userId = parseInt(rslt[1]);
+        for (var i in circles) {
+            for (var j in circles[i].members) {
+                if (userId == circles[i].members[j]) {
+                    existInAssign = true;
+                }
+                if (existInAssign) { break; }
+            }
+            if (existInAssign) { break; }
+        }
+        if (!existInAssign) { unassigneds.push(userId); }
+    });
+
+    var rules = [];  // rules of group formation
+    for (var j = 0; j < circles.length ; j++) {
+        var itemids = prompt('Please insert the grade-items ids separate by commas. '+
+                'These items will be used to define the participants for the group: '+circle[j].name);
+            itemids = itemids.split(",");
+        var operation = prompt('Please select the operation that will be perfomermed '+
+                'with the grades of items. Possible values: [average], [or] or [and]');
+        var expressions = [];
+        if (operation == 'average') {
+            expressions.push(prompt('Input the condition expression to evaluate the average value. '+
+                        'To define this expresion, use the format: [itemid] [condition] [number]. For example, <=34'));
+        } else {
+            var exp_str = prompt('Input the list of conditions expression to evaluate each game-items. '+
+                        'To define each expresion, use the format: [itemid] [condition] [numer]. For example, <= 34'));
+            expressions = exp_str.split(",");
+        } 
+
+        rules.push({
+            groupname: circle[j].name,
+            itemids: itemids,
+            operation: operation,
+            expressions: expressions
+        });
+    }
+
+    $.ajax({
+        global: false,
+        url: 'grouping_ajax.php',
+        data: {
+            rules: rules,
+            action: 'groupingbygrade',
+            userids: unassigneds
+        },
+        type: 'POST',
+        success: function(resp) {
+            for (var j = 0; j < circles.length ; j++) {
+                circles[j].members = resp[circles[j].name];
+            }
+            synchroniseModelToView();
+        }
+    });
+}
+
 function assignBasedOnQPJ() {
     synchroniseViewToModel();
     var unassigneds = new Array();
@@ -331,6 +393,7 @@ function assignBasedOnQPJ() {
         url: 'grouping_ajax.php',
         data: {
             limit: limit,
+            action: 'groupingbyqpj',
             userids: unassigneds
         },
         type: 'POST',
