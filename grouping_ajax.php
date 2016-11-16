@@ -39,26 +39,28 @@ if ($action == 'groupingbyqpj') {
 
     $limit = required_param('limit', PARAM_FLOAT) + 2.0;
 
-        $survey_id = 1;
-        $dreamer_quest_id = 20;
-        $quest_choiceid_block = array();
-        $quest_choiceid_block['dreamer'] = array(198, 180, 175, 187);
-        $quest_choiceid_block['achiever'] = array(174, 179, 176, 200, 189, 177, 178);
-        $quest_choiceid_block['socializer'] = array(196, 199, 201, 188, 186, 190, 197);
+    $survey_id = 1;
+    $dreamer_quest_id = 20;
+    $quest_choiceid_block = array();
+    $quest_choiceid_block['dreamer'] = array(198, 180, 175, 187);
+    $quest_choiceid_block['achiever'] = array(174, 179, 176, 200, 189, 177, 178);
+    $quest_choiceid_block['socializer'] = array(196, 199, 201, 188, 186, 190, 197);
 
-        foreach ($userids as $userid) {
-            if (!$DB->record_exists('questionnaire_response',
+    $accum_groups = array();
+
+    foreach ($userids as $userid) {
+        if (!$DB->record_exists('questionnaire_response',
             array('username'=>$userid, 'complete'=>'y'))) continue;
 
         foreach ($quest_choiceid_block as $group=>$quest_choiceids) {
             $accum = 0;
             // obtain values from the questionnaire-choice ids by each possible group 
             $values = $DB->get_fieldset_sql('SELECT resp_r.rank
-                FROM {questionnaire_response_rank} resp_r
-                INNER JOIN {questionnaire_response} resp ON resp.id = resp_r.response_id
-                WHERE resp_r.choice_id IN ('.implode(',', $quest_choiceids).') AND
-                    resp.survey_id = :survey_id AND
-                    resp.username = :userid', array('survey_id'=>$survey_id, 'userid'=>$userid));
+                    FROM {questionnaire_response_rank} resp_r
+                    INNER JOIN {questionnaire_response} resp ON resp.id = resp_r.response_id
+                    WHERE resp_r.choice_id IN ('.implode(',', $quest_choiceids).') AND
+                        resp.survey_id = :survey_id AND
+                        resp.username = :userid', array('survey_id'=>$survey_id, 'userid'=>$userid));
         
             // obtain accumulation
             foreach ($values as $value) {
@@ -70,12 +72,12 @@ if ($action == 'groupingbyqpj') {
                 $accum = $accum / count($values);
             } else {
                 $value = (float)$DB->get_field_sql('SELECT choice.value
-                    FROM {questionnaire_quest_choice} choice
-                    INNER JOIN {questionnaire_resp_single} resp_s ON resp_s.choice_id = choice.id 
-                    INNER JOIN {questionnaire_response} resp ON resp.id = resp_s.response_id 
-                    WHERE choice.question_id = :question_id AND
-                        resp.survey_id = :survey_id AND
-                        resp.username = :userid',
+                        FROM {questionnaire_quest_choice} choice
+                        INNER JOIN {questionnaire_resp_single} resp_s ON resp_s.choice_id = choice.id 
+                        INNER JOIN {questionnaire_response} resp ON resp.id = resp_s.response_id 
+                        WHERE choice.question_id = :question_id AND
+                            resp.survey_id = :survey_id AND
+                            resp.username = :userid',
                         array('question_id'=>$dreamer_quest_id,
                               'survey_id'=>$survey_id, 'userid'=>$userid)); 
                 $accum = $accum + $value;
@@ -83,10 +85,32 @@ if ($action == 'groupingbyqpj') {
             }
 
             if (empty($return[$group])) $return[$group] = array();
-            if (($accum > $limit)  && !in_array($userid, $return[$group])) {
-                $return[$group][] = $userid;
+
+            // if the group is !dreamer
+            if ($group != 'dreamer') {
+                if (empty($accum_groups[$userid])) $accum_groups[$userid] = array();
+                if ($accum > $limit) $accum_groups[$userid][$group] = (float)$accum;
+            } else {
+                if (($accum > $limit) && !in_array($userid, $return[$group])) {
+                    $return[$group][] = $userid;
+                }
             }
         }
+
+    }
+
+
+    // choose between achiever and socializer
+    foreach ($accum_groups as $userid=>$groups) {
+        if (empty($groups)) continue;
+        $max_group = ''; $max_value = -500.0;
+        foreach ($groups as $group=>$value) {
+            if ($value > $max_value) {
+                $max_group = $group;
+                $max_value = (float)$value;
+            }
+        }
+        $return[$max_group][] = $userid;
     }
 
 //    print_r($return);
