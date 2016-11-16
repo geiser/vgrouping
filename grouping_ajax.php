@@ -39,15 +39,15 @@ if ($action == 'groupingbyqpj') {
 
     $limit = required_param('limit', PARAM_FLOAT) + 2.0;
 
-    $survey_id = 1;
-    $dreamer_quest_id = 20;
-    $quest_choiceid_block = array();
-    $quest_choiceid_block['dreamer'] = array(198, 180, 175, 187);
-    $quest_choiceid_block['achiever'] = array(174, 179, 176, 200, 189, 177, 178);
-    $quest_choiceid_block['socializer'] = array(196, 199, 201, 188, 186, 190, 197);
+        $survey_id = 1;
+        $dreamer_quest_id = 20;
+        $quest_choiceid_block = array();
+        $quest_choiceid_block['dreamer'] = array(198, 180, 175, 187);
+        $quest_choiceid_block['achiever'] = array(174, 179, 176, 200, 189, 177, 178);
+        $quest_choiceid_block['socializer'] = array(196, 199, 201, 188, 186, 190, 197);
 
-    foreach ($userids as $userid) {
-        if (!$DB->record_exists('questionnaire_response',
+        foreach ($userids as $userid) {
+            if (!$DB->record_exists('questionnaire_response',
             array('username'=>$userid, 'complete'=>'y'))) continue;
 
         foreach ($quest_choiceid_block as $group=>$quest_choiceids) {
